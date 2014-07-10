@@ -1,0 +1,17 @@
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentStart="true"
+    android:showDividers="middle">
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/editTextName"
+        android:layout_alignParentLeft="true"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+</LinearLayout>
