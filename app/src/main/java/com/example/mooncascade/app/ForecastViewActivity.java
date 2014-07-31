@@ -153,7 +153,7 @@ public class ForecastViewActivity extends ActionBarActivity {
                     Log.v("Night nodes childs", String.valueOf(ns.getLength()));
 
                     for(int a = 0; a < ns.getLength(); a++) {
-                        Node nNight = ns.item(i);
+                        Node nNight = ns.item(a);
                         if (nNight.getNodeName().equals("tempmin")) {
                             nTemp.setText(nTemp.getText() + "Temperatuur: " + nNight.getFirstChild().getNodeValue());
                         }
