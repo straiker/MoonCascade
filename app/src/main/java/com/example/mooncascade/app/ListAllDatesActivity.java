@@ -1,7 +1,11 @@
 package com.example.mooncascade.app;
 
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -14,6 +18,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -25,68 +30,50 @@ import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
-
-public class UserLocationActivity extends ActionBarActivity {
-    public static final String REQUEST_URL= "http://www.ilmateenistus.ee/ilma_andmed/xml/forecast.php";
-    public static final String myPrefs = "MyPrefs" ;
-    public static SharedPreferences prefs = null;
-    public ArrayList<String> places;
-
-    Document doc;
+public class ListAllDatesActivity extends ActionBarActivity {
+    TextView textview;
+    ListView info;
     ProgressDialog pDialog;
-    ListView placesView;
+    Document doc;
+    String date;
 
-    // Activity that sets the users location that the user selects from an array
+    ArrayList<String> dates;
+    public static final String REQUEST_URL= "http://www.ilmateenistus.ee/ilma_andmed/xml/forecast.php";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_location);
-        Log.v("Activity","### Set prefs activity started");
+        setContentView(R.layout.activity_list_all_dates);
 
-        prefs = getSharedPreferences(myPrefs, Context.MODE_PRIVATE);
-
-        final Intent goBack = new Intent(this, WeatherDetailActivity.class);
-
-        places = new ArrayList<String>();
+        dates = new ArrayList<String>();
 
         new DownloadXML().execute(REQUEST_URL);
-        placesView = (ListView)findViewById(R.id.listView);
 
-        placesView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        info = (ListView) findViewById(R.id.info);
+
+        final Intent forecastView = new Intent(this, ForecastViewActivity.class);
+        info.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String val = places.get(i);
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putString("userLocation", val);
-                editor.commit();
-                startActivity(goBack);
+                String val = dates.get(i);
+                forecastView.putExtra("DATE", val);
+                startActivity(forecastView);
             }
         });
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.user_location, menu);
+        getMenuInflater().inflate(R.menu.list_all_places, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent setPrefs = new Intent(this, UserLocationActivity.class);
-
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            startActivity(setPrefs);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
     private class DownloadXML extends AsyncTask<String, Void, Void> {
 
@@ -94,9 +81,9 @@ public class UserLocationActivity extends ActionBarActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             // Create a progressbar
-            pDialog = new ProgressDialog(UserLocationActivity.this);
+            pDialog = new ProgressDialog(ListAllDatesActivity.this);
             // Set progressbar title
-            pDialog.setTitle("Fetching locations!");
+            pDialog.setTitle("Loading Weather Info!");
             // Set progressbar message
             pDialog.setMessage("Loading...");
             pDialog.setIndeterminate(false);
@@ -110,8 +97,10 @@ public class UserLocationActivity extends ActionBarActivity {
                 URL url = new URL(Url[0]);
                 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
                 DocumentBuilder db = dbf.newDocumentBuilder();
+                // Download the XML file
                 doc = db.parse(new InputSource(url.openStream()));
                 doc.getDocumentElement().normalize();
+                // Locate the Tag Name
             } catch (Exception e) {
                 Log.e("Error", e.getMessage());
                 e.printStackTrace();
@@ -122,22 +111,27 @@ public class UserLocationActivity extends ActionBarActivity {
 
         @Override
         protected void onPostExecute(Void args) {
+            textview = (TextView) findViewById(R.id.test);
+
             XPath xPath =  XPathFactory.newInstance().newXPath();
 
-            String expression = "//day/place/name";
+            String expression = "//forecast";
             NodeList nodeList;
-
             try {
                 nodeList = (NodeList) xPath.compile(expression).evaluate(doc, XPathConstants.NODESET);
+
                 for (int i = 0; i < nodeList.getLength(); i++) {
-                    Node node = nodeList.item(i);
-                    places.add(node.getFirstChild().getNodeValue());
+                    Node nodes = nodeList.item(i);
+                    date = nodes.getAttributes().getNamedItem("date").getNodeValue();
+                    dates.add(date);
                 }
-                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(UserLocationActivity.this, R.layout.list_row, places);
-                placesView.setAdapter(arrayAdapter);
+
+                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(ListAllDatesActivity.this, R.layout.list_row, dates);
+                info.setAdapter(arrayAdapter);
             } catch (XPathExpressionException e) {
                 e.printStackTrace();
             }
+
             pDialog.dismiss();
         }
     }

@@ -10,7 +10,7 @@
     android:background="#000">
 
     <TextView
-        android:text="@string/vali_tegevus"
+        android:text="@string/pick_date"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/test"
@@ -19,21 +19,9 @@
         android:textColor="#ccc"
         android:textStyle="bold"
         android:textSize="20dp"/>
-    <Button
+    <ListView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/forecast"
-        android:text="@string/forecast"
-        android:layout_below="@+id/test"
-        android:background="#ccc"
-        android:layout_marginBottom="10dp"
-        android:onClick="onClick"/>
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/detail"
-        android:text="@string/detail"
-        android:layout_below="@+id/forecast"
-        android:background="#ccc"
-        android:onClick="onClick"/>
+        android:id="@+id/info"
+        android:layout_below="@+id/test"/>
 </RelativeLayout>

@@ -8,5 +8,22 @@
     <string name="send">Send</string>
     <string name="title_activity_weather_detail">WeatherDetailActivity</string>
     <string name="title_activity_user_location">UserLocationActivity</string>
+    <string name="xml_error">XML Error</string>
+    <string name="connection_error">Connection Error</string>
+    <string name="submit">Sisesta</string>
+    <string name="updated">Updated</string>
+    <string name="wifi_connected">Wifi Connected</string>
+    <string name="lost_connection">Connection lost</string>
+    <string name="title_activity_list_all_places">ListAllPlaces</string>
+    <string name="title_activity_no_connection">NoConnectionActivity</string>
+    <string name="noCon">Network not connected</string>
+    <string name="forecast">Ilma prognoos</string>
+    <string name="detail">Ilmateade</string>
+    <string name="vali_tegevus">Valige millist ilmainfot soovite</string>
+    <string name="prognoos">Ilmaprognoos</string>
+    <string name="pick_date">Vali kuupäev</string>
+    <string name="title_activity_forecast_view">ForecastViewActivity</string>
+    <string name="day">Päev</string>
+    <string name="night">Öö</string>
 
 </resources>
